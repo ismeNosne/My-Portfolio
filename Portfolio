@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nguyễn Thanh Hồng Sơn // Portfolio Game Hub</title>
+  <style>
+    :root {
+      --bg: #0b0e14;
+      --panel: rgba(22, 27, 34, 0.9);
+      --accent-cyan: #00f2fe;
+      --accent-purple: #9d4edd;
+      --accent-green: #00ff88;
+      --border: rgba(255, 255, 255, 0.12);
+      --text: #f0f6fc;
+      --muted: #8b949e;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 16px;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(157, 78, 221, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(0, 242, 254, 0.1) 0%, transparent 40%);
+    }
+
+    .top-bar {
+      width: 100%;
+      max-width: 1020px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .sys-status {
+      font-size: 0.8rem;
+      letter-spacing: 1.5px;
+      color: var(--accent-cyan);
+      font-weight: 700;
+    }
+    .toggle-btn {
+      background: #1c2433;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    .toggle-btn:hover {
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+    }
+
+    /* GAMER HUB VIEW */
+    .hub-container {
+      width: 100%;
+      max-width: 1020px;
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 24px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 26px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(16px);
+    }
+
+    /* Left: Stats */
+    .stats-card {
+      border-right: 1px solid var(--border);
+      padding-right: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .avatar-box {
+      width: 64px;
+      height: 64px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: #0b0e14;
+    }
+    .stat-row { display: flex; flex-direction: column; gap: 4px; }
+    .stat-label { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--muted); }
+    .bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden; }
+    .bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple)); }
+
+    /* Right: Quests */
+    .quest-panel { display: flex; flex-direction: column; gap: 16px; }
+    .tabs { display: flex; gap: 8px; border-bottom: 1px solid var(--border); padding-bottom: 12px; overflow-x: auto; }
+    .tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--muted);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .tab-btn.active {
+      background: rgba(0, 242, 254, 0.1);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+    }
+    .quest-box {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      animation: fadeIn 0.25s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .loot-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .loot-card {
+      background: rgba(255,255,255,0.03);
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .loot-val { font-size: 1.15rem; font-weight: 800; color: var(--accent-cyan); }
+    .loot-lbl { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+
+    /* DOCUMENT VIEW (HR Mode) */
+    .doc-container {
+      display: none;
+      width: 100%;
+      max-width: 820px;
+      background: #111622;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 36px;
+      line-height: 1.6;
+    }
+    .doc-section { margin-bottom: 24px; }
+    .doc-section h3 { color: var(--accent-cyan); margin-bottom: 6px; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
+
+    .contact-link {
+      color: var(--accent-cyan);
+      text-decoration: none;
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 820px) {
+      .hub-container { grid-template-columns: 1fr; }
+      .stats-card { border-right: none; border-bottom: 1px solid var(--border); padding-right: 0; padding-bottom: 20px; }
+      .loot-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <div class="sys-status">// SYSTEM OPERATIONAL: LEVEL 25</div>
+    <button class="toggle-btn" id="modeBtn" onclick="toggleMode()">📄 Bật Chế Độ Đọc Nhanh (HR Mode)</button>
+  </div>
+
+  <!-- GAMER HUB VIEW -->
+  <div class="hub-container" id="gamerHub">
+    <!-- CỘT TRÁI: PROFILE & CHỈ SỐ -->
+    <div class="stats-card">
+      <div style="display:flex; gap:14px; align-items:center;">
+        <div class="avatar-box">HS</div>
+        <div>
+          <h2 style="font-size:1.15rem; color:#fff;">Nguyễn Thanh Hồng Sơn</h2>
+          <p style="font-size:0.75rem; color:var(--muted);">Social Media & Community Specialist</p>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div class="stat-row">
+          <div class="stat-label"><span>COMMUNITY OPS & SCALE</span><span>95%</span></div>
+          <div class="bar-bg"><div class="bar-fill" style="width: 95%;"></div></div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label"><span>ESPORTS & EVENT EXECUTION</span><span>92%</span></div>
+          <div class="bar-bg"><div class="bar-fill" style="width: 92%;"></div></div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label"><span>CONTENT & VIRAL CAMPAIGN</span><span>88%</span></div>
+          <div class="bar-bg"><div class="bar-fill" style="width: 88%;"></div></div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label"><span>MULTIMEDIA (Ps, Pr, CapCut)</span><span>85%</span></div>
+          <div class="bar-bg"><div class="bar-fill" style="width: 85%;"></div></div>
+        </div>
+      </div>
+
+      <div style="font-size:0.75rem; color:var(--muted); line-height: 1.6; border-top: 1px solid var(--border); padding-top: 12px;">
+        <div>📍 TP. Hồ Chí Minh</div>
+        <div>📞 0329 209 576</div>
+        <div>✉️ hongson.nguyen260101@gmail.com</div>
+      </div>
+
+      <a href="mailto:hongson.nguyen260101@gmail.com" style="margin-top:auto; padding:10px; background:linear-gradient(135deg, var(--accent-cyan), #4facfe); color:#0b0e14; text-align:center; font-weight:700; border-radius:8px; text-decoration:none;">⚔ HIRE / GỬI EMAIL</a>
+    </div>
+
+    <!-- CỘT PHẢI: QUEST LOG (STAGE SELECT) -->
+    <div class="quest-panel">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchStage(0)">Stage 01: VCS LMHT (VNG)</button>
+        <button class="tab-btn" onclick="switchStage(1)">Stage 02: Viewing Party Circuit</button>
+        <button class="tab-btn" onclick="switchStage(2)">Stage 03: ICT Growth (Phong Vũ)</button>
+      </div>
+
+      <div class="quest-box" id="questContent">
+        <!-- Render tự động bởi JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- HR SAFE / DOCUMENT VIEW -->
+  <div class="doc-container" id="docView">
+    <h1 style="color:#fff; margin-bottom: 4px;">Nguyễn Thanh Hồng Sơn</h1>
+    <p style="color:var(--muted); margin-bottom: 20px;">
+      Social Media & Community Specialist | 0329 209 576 | hongson.nguyen260101@gmail.com
+    </p>
+
+    <div class="doc-section">
+      <h3>1. Social Content Esports – VCS LMHT (VNG Corporation)</h3>
+      <p>Quản lý và phát triển nội dung cho Fanpage VCS LMHT trong các mùa giải ON Live VCS 2025, MSI 2025, WORLDS 2025. Đạt mức tăng trưởng tự nhiên <strong>+9.300 followers</strong> và tạo ra <strong>1.61 triệu lượt tương tác</strong>.</p>
+    </div>
+
+    <div class="doc-section">
+      <h3>2. Esports Content & Event Execution – Viewing Party Circuit</h3>
+      <p>Điều phối chuỗi sự kiện offline toàn quốc với kỷ lục <strong>65 Viewing Parties</strong>, thu hút trung bình <strong>1.600+ người tham dự/sự kiện</strong>. Mở rộng cộng đồng LMHT Facebook & Discord từ <strong>37.000 lên 68.000 thành viên</strong>.</p>
+    </div>
+
+    <div class="doc-section">
+      <h3>3. Social Content & Community – Phong Vũ</h3>
+      <p>Lên kế hoạch và thực thi chiến lược nội dung ngành ICT kết hợp với các thương hiệu đối tác (ASUS, HP, Xiaomi). Xây dựng Facebook Group đạt <strong>1.000 thành viên mới/tháng</strong> và duy trì tỷ lệ <strong>~10% active user</strong>.</p>
+    </div>
+
+    <div style="margin-top: 24px; padding-top: 14px; border-top: 1px solid var(--border);">
+      <a href="https://www.canva.com/design/DAHCPxDwGD8/WmgqFEjEhVce-cx2fguxkQ/edit" target="_blank" class="contact-link">🔗 Xem Portfolio chi tiết trên Canva ↗</a>
+    </div>
+  </div>
+
+  <script>
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playBeep(freq = 650, duration = 0.04) {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    }
+
+    const stages = [
+      {
+        tag: "STAGE 01: VNG CORPORATION // VCS LMHT",
+        title: "Tối Ưu Nội Dung Fanpage & Esports Coverage",
+        desc: "Phụ trách chiến lược content đa nền tảng bám sát các giải đấu hàng đầu: ON Live VCS 2025, MSI 2025 và WORLDS 2025. Tối ưu định dạng cập nhật nhanh, visual bắt trend và tương tác thời gian thực.",
+        role: "Social Content Esports (05/2025 - 12/2025)",
+        loot: [
+          { val: "1.61M", lbl: "TOTAL ENGAGEMENTS" },
+          { val: "+9.3K", lbl: "ORGANIC FOLLOWERS" },
+          { val: "Major Tier", lbl: "VCS, MSI, WORLDS" }
+        ]
+      },
+      {
+        tag: "STAGE 02: BOSS ENCOUNTER // OFFLINE CIRCUIT",
+        title: "Chuỗi Sự Kiện 65 Viewing Party & Scale Discord",
+        desc: "Điều phối và thực thi mạng lưới sự kiện offline toàn quốc kết hợp phát triển cộng đồng LMHT trên Facebook và Discord, thúc đẩy sự gắn kết sâu rộng giữa tuyển thủ và người hâm mộ.",
+        role: "Esports Content & Event Collaborator (08/2024 - 05/2025)",
+        loot: [
+          { val: "65 Events", lbl: "VIEWING PARTIES" },
+          { val: "1.600+", lbl: "ATTENDEES / EVENT" },
+          { val: "37K → 68K", lbl: "COMMUNITY SCALE" }
+        ]
+      },
+      {
+        tag: "STAGE 03: ICT BRAND PARTNERSHIP // PHONG VŨ",
+        title: "Xây Dựng Cộng Đồng Công Nghệ & Thương Hiệu ICT",
+        desc: "Phối hợp với các nhãn hàng hàng đầu (ASUS, HP, Xiaomi) triển khai các hoạt động cộng đồng định kỳ (tuần/tháng/quý), gia tăng tỷ lệ thảo luận và chuyển đổi tự nhiên trong Group.",
+        role: "Social Content (07/2025 - 05/2026)",
+        loot: [
+          { val: "~10%", lbl: "ACTIVE USER RATE" },
+          { val: "+1.000", lbl: "MEMBERS / THÁNG" },
+          { val: "ASUS, HP...", lbl: "BRAND PARTNERS" }
+        ]
+      }
+    ];
+
+    function switchStage(idx) {
+      playBeep(850, 0.04);
+      document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+        btn.classList.toggle('active', i === idx);
+      });
+      const s = stages[idx];
+      document.getElementById('questContent').innerHTML = `
+        <div style="font-size:0.75rem; color:var(--accent-cyan); font-weight
